@@ -1,0 +1,253 @@
+/* register.css – FINAL & 100% WORKING: BLUE LINE UNDER "REGISTER" ONLY ON THIS PAGE */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f8faff;
+  color: #1e293b;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.6;
+}
+
+/* ================== NAVBAR ================== */
+.navbar {
+  background: white;
+  padding: 14px 60px;
+  height: 72px;
+  box-shadow: 0 4px 20px rgba(67, 97, 238, 0.1);
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+
+.logo img { height: 42px; object-fit: contain; }
+
+.main-nav ul {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+  align-items: center;
+}
+
+.main-nav a {
+  color: #475569;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  padding: 8px 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.main-nav a:hover { color: #4361ee; }
+
+/* Active state for main nav links (Home, User Login, etc.) */
+.main-nav a.active {
+  color: #4361ee;
+  font-weight: 600;
+}
+
+.main-nav a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -18px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #4361ee;
+  border-radius: 2px;
+}
+
+/* RIGHT SIDE: Register & Login buttons */
+.auth-buttons {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.register-btn {
+  color: #4361ee;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  position: relative;
+  padding: 8px 0;
+}
+
+.register-btn:hover { opacity: 0.9; }
+
+/* THIS IS THE FIX — UNDERLINE ONLY WHEN .active IS ADDED */
+.register-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -18px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #4361ee;
+  border-radius: 2px;
+}
+
+.login-btn {
+  background: #4361ee;
+  color: white;
+  padding: 10px 26px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14.5px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  background: #364fc7;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(67, 97, 238, 0.3);
+}
+
+/* ================== MAIN CONTENT ================== */
+main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100px 20px 80px;
+}
+
+.login-card {
+  background: white;
+  padding: 55px;
+  border-radius: 18px;
+  box-shadow: 0 15px 50px rgba(67, 97, 238, 0.15);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.card-logo img { height: 85px; margin-bottom: 28px; object-fit: contain; }
+
+.login-card h2 { font-size: 26px; margin-bottom: 30px; color: #1e293b; font-weight: 600; }
+
+.input-group { margin-bottom: 20px; text-align: left; }
+.input-group input {
+  width: 100%;
+  padding: 16px 18px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+.input-group input:focus {
+  outline: none;
+  border-color: #4361ee;
+  box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.12);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  background: #4361ee;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16.5px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 10px 0 20px;
+  transition: background 0.3s ease;
+}
+.btn-primary:hover { background: #364fc7; }
+
+.lost-password p { color: #64748b; font-size: 14.5px; }
+.lost-password a { color: #4361ee; font-weight: 600; text-decoration: none; }
+.lost-password a:hover { text-decoration: underline; }
+
+.divider {
+  margin: 35px 0;
+  color: #94a3b8;
+  font-size: 14.5px;
+  position: relative;
+  text-align: center;
+}
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #cbd5e1 10%, #cbd5e1 90%, transparent);
+  background-size: 12px 1px;
+  background-repeat: repeat-x;
+}
+.divider span {
+  background: white;
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  padding: 15px;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 15.5px;
+  font-weight: 500;
+  color: #5f6368;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.google-btn:hover {
+  background: #f8faff;
+  border-color: #4361ee;
+  box-shadow: 0 4px 12px rgba(67, 97, 238, 0.15);
+}
+.google-btn svg { width: 20px; height: 20px; }
+
+/* ================== FOOTER ================== */
+.site-footer {
+  background: #0f172a;
+  color: #cbd5e1;
+  padding: 80px 60px 40px;
+  margin-top: auto;
+}
+.footer-content { max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 100px; margin-bottom: 60px; }
+.footer-brand img.footer-logo { height: 56px; margin-bottom: 20px; }
+.footer-brand p { color: #94a3b8; line-height: 1.7; max-width: 360px; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 120px; flex: 2; }
+.link-column h4 { color: white; margin-bottom: 24px; font-size: 17px; font-weight: 600; }
+.link-column a { color: #cbd5e1; text-decoration: none; font-weight: 500; }
+.link-column a:hover { color: #4361ee; }
+.footer-bottom { max-width: 1400px; margin: 0 auto; padding-top: 40px; border-top: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; font-size: 14.5px; color: #94a3b8; }
+.social-links a { color: #cbd5e1; margin-left: 28px; font-weight: bold; font-size: 16px; text-decoration: none; }
+.social-links a:hover { color: #4361ee; }
+
+/* ================== RESPONSIVE ================== */
+@media (max-width: 768px) {
+  .navbar { padding: 14px 30px; height: auto; }
+  .nav-container { flex-direction: column; gap: 16px; text-align: center; }
+  .main-nav ul { gap: 24px; }
+  .auth-buttons { order: -1; }
+}

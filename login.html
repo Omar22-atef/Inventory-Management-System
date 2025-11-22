@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — Inventra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+  <!-- Compact & Beautiful Navbar with HOME button -->
+<header class="navbar">
+  <div class="nav-container">
+    <div class="logo">
+      <img src="Images/Screenshot 2025-11-21 145929.png" alt="Inventra Logo">
+    </div>
+
+    <nav class="main-nav">
+      <ul>
+        <!-- Add this line for Home -->
+        <li><a href="Home.html">Home</a></li>
+        
+        <li><a href="login.html" class="active">User Login</a></li>
+        <li><a href="inventory.html">View Inventory</a></li>
+        <li><a href="suppliers.html">Supplier Management</a></li>
+        <li><a href="reports.html">Reports</a></li>
+      </ul>
+    </nav>
+
+    <div class="auth-buttons">
+      <a href="register.html" class="register-btn">Register</a>
+      <a href="login.html" class="login-btn">Log In</a>
+    </div>
+  </div>
+</header>
+  <!-- Login Card -->
+  <main>
+    <div class="login-card">
+      <div class="card-logo">
+        <img src="Images/Screenshot 2025-11-21 145929.png" alt="Inventra">
+      </div>
+      <br></e>
+
+      <form action="login_process.php" method="POST">
+        <div class="input-group">
+          <input type="text" name="username" placeholder="Username or Email" required />
+        </div>
+        <div class="input-group">
+          <input type="password" name="password" placeholder="Password" required />
+        </div>
+        <button type="submit" class="btn-primary">Log in</button>
+      </form>
+
+      <div class="lost-password">
+        <p>Don't have an account? <a href="register.html">Register</a></p>
+      </div>
+
+      <div class="divider">
+        <span>Or continue with</span>
+      </div>
+
+      <button class="google-btn">
+        <svg width="20" height="20" viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">
+          <path d="M46 24.881c0-1.56-.14-3.06-.4-4.5H23.5v8.51h12.62c-.55 2.95-2.21 5.44-4.63 7.1v5.97h7.48c4.38-4.03 6.9-9.97 6.9-17.08z" fill="#4285F4"/>
+          <path d="M23.5 46.5c6.24 0 11.47-2.07 15.3-5.6l-7.48-5.97c-2.07 1.39-4.73 2.21-7.82 2.21-6.01 0-11.1-4.05-12.92-9.5H4.88v6c3.8 7.5 11.62 12.86 20.62 12.86z" fill="#34A853"/>
+          <path d="M10.58 27.66c-.93-2.74-.93-5.66 0-8.4v-6h-7.7c-2.8 5.6-2.8 12.2 0 17.8l7.7-6z" fill="#FBBC05"/>
+          <path d="M23.5 9.24c3.39-.04 6.62 1.24 9.08 3.57l6.8-6.8C34.76 1.82 29.53-.42 23.5.08 14.5.08 6.68 5.44 2.88 13l7.7 6c1.82-5.45 6.91-9.5 12.92-9.5z" fill="#EA4335"/>
+        </svg>
+        Google
+      </button>
+    </div>
+  </main>
+
+  <!-- FOOTER – SAME AS REGISTER PAGE -->
+<footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <img src="Images/Screenshot 2025-11-21 145929.png" alt="Inventra" class="footer-logo">
+        <p>Inventra — Complete inventory management system for modern businesses.</p>
+      </div>
+      <div class="footer-links">
+        <div class="link-column"><h4>Product</h4><ul><li><a href="#">Inventory</a></li><li><a href="#">Suppliers</a></li><li><a href="#">Reports</a></li></ul></div>
+        <div class="link-column"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Contact</a></li><li><a href="#">Privacy</a></li></ul></div>
+        <div class="link-column"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="#">Documentation</a></li></ul></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Inventra. All rights reserved.</p>
+      <div class="social-links"><a href="#">FB</a><a href="#">TW</a><a href="#">IN</a></div>
+    </div>
+  </footer>
+</body>
+</html>
