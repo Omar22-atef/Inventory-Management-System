@@ -1,4 +1,6 @@
-        * { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
 body {
     font-family: 'Inter', sans-serif;
@@ -7,7 +9,6 @@ body {
     display: flex;
 }
 
-/* Sidebar */
 /* ================= Sidebar ================= */
 .sidebar {
     width: 250px;
@@ -69,19 +70,22 @@ body {
     color: #ef4444;
 }
 
-/* MAIN */
+/* ================= Main Content ================= */
 .main-content {
     margin-left: 250px;
     width: calc(100% - 250px);
     padding: 24px;
 }
 
-/* Header */
+/* Header / Dashboard top */
 .dashboard-header {
     background: #ffffff;
     padding: 14px 24px;
     border-radius: 14px;
-    box-shadow: 0 4px 20px rgba(67,97,238,0.1);
+    box-shadow: 0 4px 20px rgba(67, 97, 238, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .search-box {
@@ -108,14 +112,14 @@ body {
     cursor: pointer;
 }
 
-/* Overview Cards */
+/* ================= Overview Cards ================= */
 .overview-card {
     background: #fff;
     padding: 20px;
     border-radius: 18px;
     text-align: center;
-    box-shadow: 0 8px 25px rgba(67,97,238,0.1);
-    transition: .3s;
+    box-shadow: 0 8px 25px rgba(67, 97, 238, 0.1);
+    transition: 0.3s;
 }
 
 .overview-card:hover {
@@ -133,7 +137,6 @@ body {
     font-size: 14px;
 }
 
-/* Icons */
 .card-icon {
     font-size: 36px;
     padding: 14px;
@@ -145,3 +148,16 @@ body {
 .green { background: #10b981; }
 .purple { background: #8b5cf6; }
 .red { background: #ef4444; }
+
+/* ================= Tables ================= */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+.badge {
+    font-size: 0.8rem;
+}

@@ -10,6 +10,7 @@ body {
     background: #f4f6fb;
 }
 
+/* ================= Sidebar ================= */
 .sidebar {
     width: 250px;
     background: #1e293b;
@@ -19,21 +20,7 @@ body {
     position: fixed;
     left: 0;
     top: 0;
-}
-.menu-item a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: #bfc7d5;
-    text-decoration: none;
-    padding: 12px 18px;
-    font-size: 15px;
-    transition: 0.25s;
-    border-radius: 8px;
-}
-
-.menu-item a i {
-    font-size: 18px;
+    z-index: 1000;
 }
 
 .sidebar-logo {
@@ -57,16 +44,32 @@ body {
     cursor: pointer;
     border-radius: 10px;
     color: #cbd5e1;
-    transition: .3s;
+    transition: 0.3s;
+}
+
+.sidebar-menu .menu-item a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: inherit;
+    text-decoration: none;
+    width: 100%;
+}
+
+.sidebar-menu .menu-item i {
+    font-size: 18px;
 }
 
 .sidebar-menu .menu-item:hover,
-.sidebar-menu .active {
+.sidebar-menu .menu-item.active {
     background: #4361ee;
     color: #fff;
 }
 
-.logout { margin-top: 40px; color: #ef4444; }
+.logout {
+    margin-top: 40px;
+    color: #ef4444;
+}
 
 .dashboard-header {
     background: #ffffff;

@@ -17,48 +17,73 @@
 <body>
     <!-- SIDEBAR -->
     <aside class="sidebar">
-        <div class="logo">
-            <h2>Reports Panel</h2>
+        <div class="sidebar-logo">
+            <h3>Inventra</h3>
         </div>
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="dashboard.html">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="MangeProducts.html">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Manage Products</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="ManageSuppliers.html">
+                    <i class="bi bi-people"></i>
+                    <span>Manage Suppliers</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="ProductReports.html">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Reporting</span>
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="stockmang.html">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Stock Management</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="settings.html">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="../Home.html">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
 
-        <nav class="menu">
-            <a href="dashboard.html" class="menu-item">
-                <i class="bi bi-speedometer2"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="MangeProducts.html" class="menu-item">
-                <i class="bi bi-box-seam"></i>
-                <span>Manage Products</span>
-            </a>
-            <a href="ManageSuppliers.html" class="menu-item">
-                <i class="bi bi-people"></i>
-                <span>Manage Suppliers</span>
-            </a>
-            <a href="ProductReports.html" class="menu-item active">
-                <i class="bi bi-file-earmark-bar-graph"></i>
-                <span>Product Reports</span>
-            </a>
-        </nav>
     </aside>
 
     <!-- MAIN CONTENT -->
     <main class="main-content">
         <!-- TOPBAR -->
-        <nav class="topbar">
-            <div class="welcome-text">
-                <h4>Product Reports</h4>
-                <p>Generate detailed reports for single products or all products.</p>
+        <nav class="dashboard-header d-flex align-items-center justify-content-between">
+            <div>
+                <h5 class="fw-bold mb-1">Welcome Username</h5>
+                <small class="text-muted">user@gmail.com</small>
             </div>
 
-            <div class="topbar-right">
-                <div class="search-box">
-                    <input type="text" id="product-report-search" class="form-control" placeholder="Search products...">
-                    <i class="bi bi-search search-icon"></i>
-                </div>
+            <div class="search-box">
+                <input type="text" class="form-control" placeholder="Search...">
+                <i class="bi bi-search search-icon"></i>
+            </div>
 
-                <div class="notification">
-                    <i class="bi bi-bell"></i>
-                </div>
+            <div class="notification">
+                <i class="bi bi-bell"></i>
             </div>
         </nav>
 
