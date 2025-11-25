@@ -88,6 +88,13 @@ body {
     align-items: center;
 }
 
+.notification i {
+    font-size: 22px;
+    color: #4361ee;
+    cursor: pointer;
+}
+
+
 .search-box {
     position: relative;
     width: 260px;
