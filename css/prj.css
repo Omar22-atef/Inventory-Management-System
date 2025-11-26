@@ -652,9 +652,8 @@ body {
 }
 
 .link-column a:hover,
-.link-column a.active {
+.link-column  {
   color: #4361ee;
-  padding-left: 6px;
 }
 
 .footer-bottom {
