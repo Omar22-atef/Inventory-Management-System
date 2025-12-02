@@ -11,13 +11,13 @@ class WarehouseSeeder extends Seeder
       public function run(): void
     {
         $warehouses = [
-            ['name' => 'Main Warehouse', 'location' => 'Cairo'],
-            ['name' => 'Secondary Warehouse', 'location' => 'Alexandria'],
-            ['name' => 'Remote Warehouse', 'location' => 'Giza'],
+            ['name' => 'Main Warehouse', 'address' => 'Cairo'],
+            ['name' => 'Secondary Warehouse', 'address' => 'Alexandria'],
+            ['name' => 'Remote Warehouse', 'address' => 'Giza'],
         ];
 
         foreach ($warehouses as $w) {
-            Warehouse::create($w);
+            Warehouse::insert($w);
         }
 
         $this->command->info('Warehouses seeded: ' . count($warehouses));

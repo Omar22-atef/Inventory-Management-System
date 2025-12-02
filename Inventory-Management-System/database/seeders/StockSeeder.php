@@ -11,7 +11,7 @@ use Illuminate\Database\Seeder;
 class StockSeeder extends Seeder
 {
   public function run(): void
-  
+
     {
         $productIds = Product::pluck('id');
         $warehouseIds = Warehouse::pluck('id');
@@ -23,7 +23,7 @@ class StockSeeder extends Seeder
 
         foreach ($productIds as $productId) {
             foreach ($warehouseIds as $warehouseId) {
-                ProductStock::create([
+                ProductStock::insert([
                     'product_id'        => $productId,
                     'warehouse_id'      => $warehouseId,
                     'quantity'          => rand(10, 100),

@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductStock extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
     protected $fillable = [
         'product_id',
         'warehouse_id',
         'quantity',
         'reorder_threshold',
-        'reorder_qty'
     ];
 
     public function product()

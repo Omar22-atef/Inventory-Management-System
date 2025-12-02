@@ -11,7 +11,7 @@ class ProductSeeder extends Seeder
 {
   public function run(): void
     {
-        
+
         if (Category::count() === 0) {
             $default = Category::create(['name' => 'General']);
         } else {
@@ -24,10 +24,11 @@ class ProductSeeder extends Seeder
             ['name' => 'Keyboard','price' => 300,  'category_id' => $default->id],
             ['name' => 'Monitor','price' => 4000,  'category_id' => $default->id],
             ['name' => 'Headphones','price' => 500,'category_id' => $default->id],
+            ['name' => 'TV', 'price' => 20000, 'category_id' => $default->id]
         ];
 
         foreach ($products as $product) {
-            Product::create($product);
+            Product::insert($product);
         }
     }
 
