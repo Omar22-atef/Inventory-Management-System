@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateNotificationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('notifications', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            // Laravel's default uses a UUID primary key for notifications
+            $table->uuid('id')->primary();
             $table->string('type');
-            $table->text('message');
-            $table->boolean('read')->default(false);
-            $table->dateTime('notification_date');
+            $table->morphs('notifiable'); // creates notifiable_type and notifiable_id
+            $table->text('data');
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });
     }
@@ -29,4 +29,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('notifications');
     }
-};
+}
