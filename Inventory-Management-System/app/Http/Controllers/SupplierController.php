@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreSupplierRequest;
+use App\Http\Requests\CreateSupplierRequest;
 use App\Http\Requests\UpdateSupplierRequest;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
@@ -17,7 +17,7 @@ class SupplierController extends Controller
     }
 
 
-    public function store(StoreSupplierRequest $request)
+    public function store(CreateSupplierRequest $request)
     {
         $supplier = Supplier::create($request->validated());
         return response()->json($supplier, 201);

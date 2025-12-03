@@ -12,24 +12,32 @@ class ProductSeeder extends Seeder
   public function run(): void
     {
 
-        if (Category::count() === 0) {
-            $default = Category::create(['name' => 'General']);
-        } else {
-            $default = Category::first();
-        }
+        Product::create([
+            'name' => 'Laptop HP',
+            'quantity' => 50,
+            'price' => 15000,
+            'reorder_threshold' => 10,
+            'supplier_id' => 1,
+            'category_id' => 1,
+        ]);
 
-        $products = [
-            ['name' => 'Laptop', 'price' => 15000, 'category_id' => $default->id],
-            ['name' => 'Mouse',  'price' => 150,   'category_id' => $default->id],
-            ['name' => 'Keyboard','price' => 300,  'category_id' => $default->id],
-            ['name' => 'Monitor','price' => 4000,  'category_id' => $default->id],
-            ['name' => 'Headphones','price' => 500,'category_id' => $default->id],
-            ['name' => 'TV', 'price' => 20000, 'category_id' => $default->id]
-        ];
+        Product::create([
+            'name' => 'Samsung TV',
+            'quantity' => 20,
+            'price' => 20000,
+            'reorder_threshold' => 5,
+            'supplier_id' => 1,
+            'category_id' => 2,
+        ]);
 
-        foreach ($products as $product) {
-            Product::insert($product);
-        }
+        Product::create([
+            'name' => 'Mouse HP',
+            'quantity' => 100,
+            'price' => 300,
+            'reorder_threshold' => 20,
+            'supplier_id' => 2,
+            'category_id' => 3,
+        ]);
     }
 
 }
