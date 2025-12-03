@@ -14,13 +14,11 @@ class Supplier extends Model
         'phone',
         'email',
         'address',
-        'payment_terms'
     ];
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'supplier_products')
-                    ->withPivot(['supplier_price', 'lead_time_days']);
+        return $this->belongsToMany(Product::class);
     }
 
     public function purchaseOrders()

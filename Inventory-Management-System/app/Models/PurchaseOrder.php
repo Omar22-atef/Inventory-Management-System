@@ -7,13 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class PurchaseOrder extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'supplier_id',
-        'po_number',
-        'status',
-        'total'
+        'supplier_id', 'status', 'total_price'
     ];
 
     public function supplier()

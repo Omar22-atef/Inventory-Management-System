@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('supplier_products', function (Blueprint $table) {
+        Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('supplier_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->decimal('supplier_price', 10, 2);
-            $table->integer('lead_time_days')->nullable();
+            $table->decimal('total_price', 12, 2)->default(0);
             $table->timestamps();
         });
     }
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('supplier_products');
+        Schema::dropIfExists('sales');
     }
 };

@@ -7,27 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use HasFactory;
     protected $fillable = [
-        'category_id',
-        'name',
-        'price',
-        'description',
-        'is_active',
+        'name', 'quantity', 'price',
+        'reorder_threshold', 'supplier_id', 'category_id'
     ];
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
 
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function ProductStock()
+    public function stockLogs()
     {
-        return $this->hasMany(ProductStock::class);
+        return $this->hasMany(StockLog::class);
     }
 
-    public function StockMovements()
-    {
-        return $this->hasMany(StockMovement::class);
-    }
 }
+

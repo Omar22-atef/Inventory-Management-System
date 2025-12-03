@@ -2,19 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PurchaseOrderItem extends Model
+class SaleItem extends Model
 {
     protected $fillable = [
-        'purchase_order_id', 'product_id',
+        'sale_id', 'product_id',
         'quantity', 'unit_price', 'total_price'
     ];
 
-    public function order()
+    public function sale()
     {
-        return $this->belongsTo(PurchaseOrder::class, 'purchase_order_id');
+        return $this->belongsTo(Sale::class);
     }
 
     public function product()
