@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
-use App\Http\Requests\ProductRequest;
+use App\Http\Requests\CreateProductRequest;
 use App\Models\Product;
 use App\Models\ProductStock;
 use Illuminate\Http\Request;
@@ -17,7 +17,7 @@ class ProductController extends Controller
     }
 
 
-    public function store(ProductRequest $request)
+    public function store(CreateProductRequest $request)
     {
         $product = Product::create($request->validated());
         return response()->json($product, 201);
