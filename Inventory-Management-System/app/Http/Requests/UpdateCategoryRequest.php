@@ -22,7 +22,7 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|string|unique:categories,name,' . $this->id,
+            'name' => 'sometimes|string|',
             'description' => 'nullable|string'
         ];
     }
