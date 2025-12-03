@@ -29,7 +29,7 @@
 
         <ul class="sidebar-menu">
             <li class="menu-item">
-                {{-- <a href="{{ route('dashboard') }}"> --}}
+                <a href="{{ route('dashboard') }}">
                     <i class="bi bi-speedometer2"></i>
                     <span>Dashboard</span>
                 </a>
