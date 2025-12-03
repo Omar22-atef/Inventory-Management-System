@@ -3,28 +3,32 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\WarehouseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductStockController;
-use App\Http\Controllers\StockMoveController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
-Route::apiResource('warehouse', WarehouseController::class);
-Route::apiResource('supplier', SupplierController::class);
-Route::apiResource('category', CategoryController::class);
-Route::apiResource('product', ProductController::class);
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\SalesController;
+use App\Http\Controllers\PurchaseOrderController;
 
-Route::get('product-stocks', [ProductStockController::class,'index']);
-Route::post('product-stocks', [ProductStockController::class,'store']);
-Route::get('product-stocks/{productStock}', [ProductStockController::class,'show']);
-Route::patch('product-stocks/{productStock}/adjust', [ProductStockController::class,'adjust']);
-Route::get('product-stocks/low-report', [ProductStockController::class,'lowStockReport']);
+Route::prefix('v1')->group(function() {
+    Route::get('purchase-orders', [PurchaseOrderController::class,'index']);
+    Route::get('purchase-orders/{id}', [PurchaseOrderController::class,'show']);
+    Route::post('purchase-orders', [PurchaseOrderController::class,'store']);
+    Route::post('purchase-orders/{id}/receive', [PurchaseOrderController::class,'receive']);
+    Route::post('purchase-orders/{id}/cancel', [PurchaseOrderController::class,'cancel']);
+});
 
-Route::get('stock-moves', [StockMoveController::class,'index']);
-Route::post('stock-moves/receive', [StockMoveController::class,'receiveFromSupplier']);
-Route::post('stock-moves/transfer', [StockMoveController::class,'transfer']);
-Route::post('stock-moves/outbound', [StockMoveController::class,'outbound']);
+
+Route::prefix('v1')->group(function() {
+    Route::post('sales', [SalesController::class, 'store']);
+});
+
+
+Route::prefix('v1')->group(function() {
+    Route::get('stock', [StockController::class,'index']);
+    Route::post('stock/receive', [StockController::class,'receive']);
+    Route::post('stock/transfer', [StockController::class,'transfer']);
+    Route::post('stock/outbound', [StockController::class,'outbound']);
+});
+
