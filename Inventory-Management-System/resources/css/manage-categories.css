@@ -1,0 +1,353 @@
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    display: flex;
+    background: #f4f6fb;
+}
+
+/* ================= Sidebar ================= */
+.sidebar {
+    width: 250px;
+    background: #1e293b;
+    color: #fff;
+    min-height: 100vh;
+    padding: 20px 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+}
+
+.sidebar-logo {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: #fff;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0 20px;
+}
+
+.sidebar-menu .menu-item {
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    border-radius: 10px;
+    color: #cbd5e1;
+    transition: 0.3s;
+}
+
+.sidebar-menu .menu-item a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: inherit;
+    text-decoration: none;
+    width: 100%;
+}
+
+.sidebar-menu .menu-item i {
+    font-size: 18px;
+}
+
+.sidebar-menu .menu-item:hover,
+.sidebar-menu .menu-item.active {
+    background: #4361ee;
+    color: #fff;
+}
+
+.logout {
+    margin-top: 40px;
+    color: #ef4444;
+}
+
+.dashboard-header {
+    background: #ffffff;
+    padding: 14px 24px;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(67,97,238,0.1);
+}
+
+.search-box {
+    position: relative;
+    width: 260px;
+}
+
+.search-box input {
+    border-radius: 40px;
+    padding-right: 40px;
+}
+
+.search-box .search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #475569;
+}
+
+.notification i {
+    font-size: 22px;
+    color: #4361ee;
+    cursor: pointer;
+}
+
+/* ================= Main Content ================= */
+.main-content {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    padding: 24px;
+}
+
+.dashboard-header {
+    background: #ffffff;
+    padding: 14px 24px;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(67, 97, 238, 0.1);
+    margin-bottom: 24px;
+}
+
+.search-box {
+    position: relative;
+    width: 260px;
+}
+
+.search-box input {
+    border-radius: 40px;
+    padding-right: 40px;
+}
+
+.search-box .search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #475569;
+}
+
+.notification i {
+    font-size: 22px;
+    color: #4361ee;
+    cursor: pointer;
+}
+
+/* ================= Table Section ================= */
+.suppliers-section {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #e4e6eb;
+}
+
+.suppliers-header h4 {
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #4C6EF5 !important;
+    border: none !important;
+}
+
+.btn-warning,
+.btn-danger {
+    font-size: 13px;
+}
+
+.table {
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.table th {
+    background-color: #242A38;
+    color: #fff;
+    font-weight: 500;
+}
+
+.table tbody tr:hover {
+    background-color: #eef1f8;
+    transition: 0.3s;
+}
+
+/* ================= Popup (Add / Edit / Delete) ================= */
+.add-supplier-popup,
+.edit-supplier-popup,
+.delete-supplier-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.add-supplier-popup.active,
+.edit-supplier-popup.active,
+.delete-supplier-popup.active {
+    display: flex;
+}
+
+.popup-content {
+    background: #ffffff;
+    width: 420px;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #e3e6ed;
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.popup-content h2 {
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.popup-content label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: 500;
+}
+
+.popup-content input,
+.popup-content textarea,
+.popup-content select {
+    width: 100%;
+    margin-bottom: 12px;
+    height: 38px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.popup-content input:focus,
+.popup-content textarea:focus,
+.popup-content select:focus {
+    border-color: #4C6EF5;
+    box-shadow: 0 0 0 2px rgba(76, 110, 245, 0.15);
+    outline: none;
+}
+
+.popup-content textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* ================= Close Popup Button ================= */
+.close-popup {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    z-index: 10;
+    background: none;
+    border: none;
+    line-height: 1;
+    padding: 0;
+}
+
+.close-popup:hover {
+    color: red;
+}
+
+/* ================= Delete Popup ================= */
+.delete-supplier-popup .popup-content {
+    width: 350px;
+    text-align: center;
+}
+
+.delete-supplier-popup p {
+    margin: 20px 0;
+    color: #555;
+    line-height: 1.6;
+}
+
+.delete-supplier-popup #delete-category-name {
+    color: #4361ee;
+}
+
+.popup-content .btn {
+    margin: 10px 5px;
+    width: auto;
+    padding: 8px 20px;
+}
+
+/* ================= Toast ================= */
+.toast-alert {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #198754;
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.4s ease-in-out;
+    z-index: 9999;
+}
+
+.toast-alert.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ================= Responsive ================= */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+    }
+
+    .sidebar-logo h3 {
+        font-size: 16px;
+    }
+
+    .sidebar-menu .menu-item span {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 70px;
+        width: calc(100% - 70px);
+        padding: 15px;
+    }
+
+    .search-box {
+        width: 180px;
+    }
+
+    .popup-content {
+        width: 90%;
+        max-width: 400px;
+        margin: 0 15px;
+    }
+}
