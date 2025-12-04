@@ -108,7 +108,6 @@ Suppliers are external and **do not have accounts or access** to the system.
 
 ## 🧰 Tech Stack
 
-> Adjust if needed to match your setup.
 
 - **Backend:** Laravel (PHP)
 - **Frontend:** Blade Templates + Bootstrap / Tailwind CSS
