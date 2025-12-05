@@ -81,19 +81,25 @@
 
     <main class="main-content">
 
-        <nav class="dashboard-header d-flex align-items-center justify-content-between">
-            <div>
-                <h5 class="fw-bold mb-1">Welcome {{ auth()->user()->name ?? 'User' }}</h5>
-                <small class="text-muted">{{ auth()->user()->email ?? '' }}</small>
-            </div>
+       <nav class="dashboard-header d-flex align-items-center justify-content-between">
+    <div>
+        <h5 class="fw-bold mb-1">Welcome {{ auth()->user()->name ?? 'User' }}</h5>
+        <small class="text-muted">{{ auth()->user()->email ?? '' }}</small>
+    </div>
 
-            <div class="search-box">
-                <input type="text" class="form-control" placeholder="Search...">
-                <i class="bi bi-search search-icon"></i>
-            </div>
+    <div class="d-flex align-items-center gap-3">
+        <div class="search-box">
+            <input type="text" class="form-control" placeholder="Search...">
+            <i class="bi bi-search search-icon"></i>
+        </div>
 
-            
-        </nav>
+        <!-- Notification icon -->
+        <div class="notification" id="notificationTrigger">
+            <i class="bi bi-bell"></i>
+        </div>
+    </div>
+</nav>
+
 
         <section class="overview mt-4">
             <h5 class="fw-bold mb-3">Overview</h5>
@@ -178,6 +184,51 @@
             </div>
         </section>
 
+            <!-- Low-Stock Reordering Overlay -->
+    <div id="lowStockOverlay" class="ls-overlay">
+        <div class="ls-overlay-backdrop"></div>
+
+        <div class="ls-panel">
+            <button class="ls-close-btn" aria-label="Close">
+                ✕
+            </button>
+
+            <h2>Automatic Low-Stock Reordering</h2>
+            <p class="ls-intro">
+                Inventra monitors your products and automatically reacts when any item reaches its low-stock threshold.
+            </p>
+
+            <ol class="ls-steps">
+                <li>
+                    <strong>Define a low-stock threshold</strong> for each product in the system.
+                </li>
+                <li>
+                    When stock reaches the threshold, a
+                    <strong>notification appears in the Admin dashboard</strong>.
+                </li>
+                <li>
+                    A <strong>reorder email is automatically sent</strong> to the assigned supplier.
+                </li>
+                <li>
+                    An <strong>email notification is sent to the Admin</strong> (optional) to confirm the low-stock event.
+                </li>
+                <li>
+                    The entire <strong>reorder process is controlled and reviewed by the Admin</strong>.
+                </li>
+            </ol>
+
+            <div class="ls-highlight">
+                <span class="ls-tag">Why this matters</span>
+                <p>
+                    This flow helps prevent stockouts while keeping the Admin in full control of supplier orders and replenishment decisions.
+                </p>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -201,6 +252,42 @@
 
         // Refresh every 30 seconds
         setInterval(refreshDashboardData, 30000);
+        
+        // Low-Stock overlay open/close behavior
+    document.addEventListener('DOMContentLoaded', function () {
+        const notifTrigger = document.getElementById('notificationTrigger');
+        const overlay      = document.getElementById('lowStockOverlay');
+        const closeBtn     = overlay ? overlay.querySelector('.ls-close-btn') : null;
+        const backdrop     = overlay ? overlay.querySelector('.ls-overlay-backdrop') : null;
+
+        if (!notifTrigger || !overlay) return;
+
+        // Open overlay when bell is clicked
+        notifTrigger.addEventListener('click', function () {
+            overlay.classList.add('show');
+        });
+
+        // Close when clicking X
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                overlay.classList.remove('show');
+            });
+        }
+
+        // Close when clicking outside the panel
+        if (backdrop) {
+            backdrop.addEventListener('click', function () {
+                overlay.classList.remove('show');
+            });
+        }
+
+        // Optional: ESC key closes
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                overlay.classList.remove('show');
+            }
+        });
+    });
     </script>
 </body>
 </html>
