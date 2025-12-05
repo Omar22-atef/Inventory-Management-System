@@ -39,3 +39,6 @@ Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name(
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/api/dashboard-stats', [DashboardController::class, 'getStats'])->name('dashboard.stats');
 
+Route::get('/salesstock', function () {
+    return view('salesstock');
+});

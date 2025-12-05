@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 
 class SalesController extends Controller
 {
-    // POST /api/v1/sales
+    
     public function store(Request $request)
     {
         $data = $request->validate([
