@@ -289,3 +289,61 @@ body {
 .popup-content .btn {
     margin: 10px 5px;
 }
+
+.toast-msg {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    display: none;
+    opacity: 0;
+    transition: opacity .4s ease;
+    z-index: 9999;
+}
+.toast-msg.show {
+    display: block;
+    opacity: 1;
+}
+
+/* Popup Styles */
+.add-product-popup,
+.edit-product-popup,
+.delete-product-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.add-product-popup.active,
+.edit-product-popup.active,
+.delete-product-popup.active {
+    display: flex;
+}
+
+.popup-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 500px;
+    max-width: 90%;
+    position: relative;
+}
+
+.close-popup {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}

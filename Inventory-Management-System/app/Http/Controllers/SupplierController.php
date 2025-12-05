@@ -12,8 +12,9 @@ class SupplierController extends Controller
 
     public function index()
     {
-        $supplier = Supplier::all();
-        return response()->json($supplier, 200);
+        $suppliers = Supplier::all();
+        // return response()->json($supplier, 200);
+        return view('manage-suppliers', compact('suppliers'));
     }
 
 
@@ -34,7 +35,7 @@ class SupplierController extends Controller
     public function update(UpdateSupplierRequest $request, string $id)
     {
         $supplier = Supplier::findOrFail($id);
-        $supplier->update($request->validated());
+        $supplier->update($request->all());
         return response()->json($supplier, 200);
     }
 

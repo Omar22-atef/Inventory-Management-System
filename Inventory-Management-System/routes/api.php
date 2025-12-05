@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
+Route::apiResource('supplier', SupplierController::class);
+Route::apiResource('category', CategoryController::class);
+Route::apiResource('product', ProductController::class);
+
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\PurchaseOrderController;
