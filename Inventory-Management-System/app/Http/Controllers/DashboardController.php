@@ -17,7 +17,7 @@ class DashboardController extends Controller
         $totalProducts = Product::count();
         $totalOrders = PurchaseOrder::count();
         $totalStock = Product::sum('quantity');
-        $outOfStock = Product::where('quantity', 0)->count();
+        $outOfStock = Product::whereColumn('quantity', '<=', 'reorder_threshold')->count();
 
         // Get products with low stock (below reorder threshold)
         $lowStockProducts = Product::whereColumn('quantity', '<=', 'reorder_threshold')
@@ -48,7 +48,7 @@ class DashboardController extends Controller
         $totalProducts = Product::count();
         $totalOrders = PurchaseOrder::count();
         $totalStock = Product::sum('quantity');
-        $outOfStock = Product::where('quantity', 0)->count();
+        $outOfStock = Product::whereColumn('quantity', '<=', 'reorder_threshold')->count();
 
         return response()->json([
             'totalProducts' => $totalProducts,
