@@ -282,6 +282,39 @@ body {
     margin: 0;
 }
 
+/* ====== Low-stock notification list inside panel ====== */
+.ls-list {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+.ls-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    background: #f9fafb;
+    gap: 16px;
+}
+
+.ls-item-main h5 {
+    font-size: 15px;
+}
+
+.ls-item-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+
 /* Animation */
 @keyframes ls-slide-up {
     from {

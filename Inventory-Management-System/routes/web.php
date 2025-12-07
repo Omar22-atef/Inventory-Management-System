@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SupplierOrderController;
+use Illuminate\Notifications\DatabaseNotification;
 
 Route::get('/', function () {
     return view('welcome');
@@ -13,11 +15,21 @@ Route::get('/', function () {
 
 
 Route::middleware(['auth'])->group(function () {
+     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+   
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.readAll');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::post('/supplier/send-order/{product}', [SupplierOrderController::class, 'sendOrderEmail'])
+        ->name('supplier.sendOrder');
+
+   Route::post('/notifications/{notification}/read', function (DatabaseNotification $notification) {
+    $notification->markAsRead();
+    return response()->json(['success' => true]);
+})->name('notifications.read');
+});
 
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -36,7 +48,7 @@ Route::post('/categories', [CategoryController::class, 'store'])->name('categori
 Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
 Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 Route::get('/api/dashboard-stats', [DashboardController::class, 'getStats'])->name('dashboard.stats');
 
 Route::get('/salesstock', function () {
