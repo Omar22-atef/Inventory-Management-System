@@ -5,7 +5,8 @@
     <title>Reorder Request</title>
 </head>
 <body>
-   <p>Dear {{ $supplier->name ?? 'Supplier' }},</p>
+
+<p>Dear {{ $supplier->name ?? 'Supplier' }},</p>
 
 <p>We would like to place a reorder for the following product:</p>
 
@@ -18,6 +19,7 @@
 <p>Please send us your quotation and expected delivery time.</p>
 
 <p>Best regards,<br>
-Inventra Admin</p>
+<strong>Inventra Admin</strong></p>
+
 </body>
 </html>

@@ -83,8 +83,8 @@
 
        <nav class="dashboard-header d-flex align-items-center justify-content-between">
     <div>
-       <h5 class="fw-bold mb-1">Welcome {{ auth()->user()->name ?? 'User' }}</h5>
-        <small class="text-muted">{{ optional(auth()->user())->email }}</small>
+      <h5 class="fw-bold mb-1">Welcome {{ $user->name ?? 'Admin' }}</h5>
+      <small class="text-muted">{{ $user->email ?? 'admin@example.com' }}</small>
     </div>
 
     <div class="d-flex align-items-center gap-3">
