@@ -14,24 +14,9 @@ class DashboardController extends Controller
     {
         // Get total counts
         $totalProducts = Product::count();
-        $totalOrders   = PurchaseOrder::count();
-        $totalStock    = Product::sum('quantity');
-        $outOfStock    = Product::where('quantity', 0)->count();
-
-        
-        $admin = User::first(); 
-
-        if ($admin) {
-            $unreadCount = $admin->unreadNotifications()->count();
-
-            $lowStockAlerts = $admin->unreadNotifications()
-                ->where('type', InventoryAlert::class)
-                ->get();
-        } else {
-            $unreadCount    = 0;
-            $lowStockAlerts = collect();
-        }
-
+        $totalOrders = PurchaseOrder::count();
+        $totalStock = Product::sum('quantity');
+        $outOfStock = Product::where('quantity', 0)->count();
 
         // Get products with low stock (below reorder threshold)
         $lowStockProducts = Product::whereColumn('quantity', '<=', 'reorder_threshold')
