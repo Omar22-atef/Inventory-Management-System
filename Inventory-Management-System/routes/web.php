@@ -18,6 +18,30 @@ Route::get('/', function () {
 | Dashboard & Stats
 |--------------------------------------------------------------------------
 */
+Route::get('/login', function() { return view('login'); })->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
+Route::get('/register', function() { return view('register'); })->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.request');
+
+// Send reset link
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.email');
+
+// Reset password form
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.reset');
+
+// Save new password
+Route::post('/reset-password', [NewPasswordController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.update');
+/////////////////////////////////////////////////////
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
