@@ -8,6 +8,9 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SupplierOrderController;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use Laravel\Fortify\Http\Controllers\NewPasswordController;
+use Laravel\Fortify\Http\Controllers\PasswordResetLinkController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,6 +23,8 @@ Route::get('/', function () {
 */
 Route::get('/login', function() { return view('login'); })->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
 
 Route::get('/register', function() { return view('register'); })->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');

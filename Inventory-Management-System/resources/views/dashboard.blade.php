@@ -262,9 +262,9 @@
 
         // Refresh every 30 seconds
         setInterval(refreshDashboardData, 30000);
-        
-  
-  
+
+
+
     // Low-Stock overlay open/close + actions
     document.addEventListener('DOMContentLoaded', function () {
         const notifTrigger = document.getElementById('notificationTrigger');

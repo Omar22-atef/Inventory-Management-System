@@ -18,15 +18,14 @@ class DashboardController extends Controller
         $totalStock    = Product::sum('quantity');
         $outOfStock    = Product::where('quantity', 0)->count();
 
-        
-        $admin = User::first(); 
+
+        $admin = User::first();
 
         if ($admin) {
             $unreadCount = $admin->unreadNotifications()->count();
 
-            $lowStockAlerts = $admin->unreadNotifications()
-                ->where('type', InventoryAlert::class)
-                ->get();
+            $lowStockAlerts = $admin->unreadNotifications()->get();
+
         } else {
             $unreadCount    = 0;
             $lowStockAlerts = collect();
