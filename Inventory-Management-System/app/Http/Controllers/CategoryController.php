@@ -16,8 +16,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::all();
-        // return response()->json($category, 200);
-        return view('manage-categories', compact('categories'));
+        return response()->json(['data' => $categories], 200);
     }
 
 
