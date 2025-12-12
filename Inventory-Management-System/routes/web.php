@@ -21,12 +21,16 @@ Route::get('/', function () {
 | Dashboard & Stats
 |--------------------------------------------------------------------------
 */
-Route::get('/login', function() { return view('login'); })->name('login');
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 
-Route::get('/register', function() { return view('register'); })->name('register');
+Route::get('/register', function () {
+    return view('register');
+})->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
     ->middleware('guest')
@@ -150,3 +154,12 @@ Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])
 Route::get('/salesstock', function () {
     return view('salesstock');
 });
+
+Route::get('/reports', function () {
+    return view('ProductReports');
+});
+
+// Server-rendered sales & inventory report (table)
+use App\Http\Controllers\ReportController;
+
+Route::get('/reports/sales-inventory', [ReportController::class, 'salesInventoryReport'])->name('reports.sales_inventory');
