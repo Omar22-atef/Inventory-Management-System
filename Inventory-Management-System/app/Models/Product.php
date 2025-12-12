@@ -8,14 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $fillable = [
-        'name', 'quantity', 'price', 'cost',
+        'name', 'quantity', 'price',
         'reorder_threshold', 'supplier_id', 'category_id'
     ];
 
-     public function saleItems()
-    {
-        return $this->belongsTo(SaleItem::class);
-    }
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
@@ -32,6 +28,4 @@ class Product extends Model
     }
 
 }
-
-
 
