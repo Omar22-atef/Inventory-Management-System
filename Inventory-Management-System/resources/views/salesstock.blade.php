@@ -4,6 +4,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
   <title>Sales & Stock Transfer | Inventra</title>
 
   <!-- Bootstrap + Icons + Font -->
@@ -14,11 +16,6 @@
   <!-- Your CSS files (move your css into public/css) -->
   <link rel="stylesheet" href="{{ asset('css/stockmang.css') }}">
   <link rel="stylesheet" href="{{ asset('css/sales-stocktransfer.css') }}">
-
-
-  <script src="{{ asset('js/stockman.js') }}"></script>
-<script src="{{ asset('js/sales-stocktransfer.js') }}"></script>
-
 
   <style>
     /* small fallback if your page-specific CSS wasn't loaded */
@@ -160,197 +157,149 @@
             </div>
           </div>
         </div>
-        <!-- modals (we will use native prompt boxes in this version to stay simple) -->
       </div>
     </div>
   </main>
 
-  <!-- Scripts -->
+  <!-- Receive Stock Modal -->
+  <div class="modal fade" id="receiveModal" tabindex="-1" aria-labelledby="receiveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <form id="receiveForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="receiveModalLabel">Receive stock</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="receiveAlert" class="alert d-none" role="alert"></div>
+
+            <div class="mb-3">
+              <label for="receiveProductId" class="form-label">Product ID</label>
+              <input type="number" class="form-control" id="receiveProductId" name="product_id" required min="1">
+            </div>
+
+            <div class="mb-3">
+              <label for="receiveQuantity" class="form-label">Quantity</label>
+              <input type="number" class="form-control" id="receiveQuantity" name="quantity" required min="0.0001" step="any">
+            </div>
+
+            <div class="mb-3">
+              <label for="receiveNotes" class="form-label">Notes (optional)</label>
+              <input type="text" class="form-control" id="receiveNotes" name="notes" placeholder="Supplier delivery, ...">
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button id="receiveSubmitBtn" type="submit" class="btn btn-primary">Receive</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts: bootstrap bundle + your page scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="{{ asset('js/stockman.js') }}"></script>
+  <script src="{{ asset('js/sales-stocktransfer.js') }}"></script>
+
+  <!-- Inline JS: modal handler + override openReceiveModal -->
   <script>
     const API_BASE = "{{ url('/api/v1') }}";
 
-    // helper: normalize paginated responses or arrays
-    function normalizeList(respJson) {
-      // many controllers return paginated: { data: [..], ... } or raw array
-      if (!respJson) return [];
-      if (Array.isArray(respJson)) return respJson;
-      if (respJson.data && Array.isArray(respJson.data)) return respJson.data;
-      // some return object with docs
-      return respJson;
+    // Create bootstrap modal instance
+    const receiveModalEl = document.getElementById('receiveModal');
+    const receiveModal = receiveModalEl ? new bootstrap.Modal(receiveModalEl) : null;
+
+    // override the openReceiveModal to show bootstrap modal
+    function openReceiveModal(prefillProductId = '') {
+      // reset state
+      const alertEl = document.getElementById('receiveAlert');
+      alertEl.classList.add('d-none');
+      alertEl.classList.remove('alert-success','alert-danger');
+      document.getElementById('receiveForm').reset();
+
+      if (prefillProductId) document.getElementById('receiveProductId').value = prefillProductId;
+
+      if (receiveModal) receiveModal.show();
     }
 
-    // load stock movements (supplier_in, transfer, out)
-    async function fetchStock(type, page = 1) {
-      let url = new URL(API_BASE + '/stock', window.location.origin);
-      if (type) url.searchParams.append('type', type);
-      url.searchParams.append('page', page);
-      const res = await fetch(url.toString());
-      if (!res.ok) throw new Error('Failed to fetch stock: ' + res.status);
-      const json = await res.json();
-      return normalizeList(json);
+    // helper to show alert inside modal
+    function showReceiveAlert(text, type='success') {
+      const el = document.getElementById('receiveAlert');
+      el.innerText = text;
+      el.classList.remove('d-none','alert-success','alert-danger');
+      el.classList.add('alert-' + (type === 'success' ? 'success' : 'danger'));
     }
 
-    // Aggregate supplier deliveries from stock (type = supplier_in)
-    async function loadSuppliers() {
-      try {
-        const list = await fetchStock('supplier_in');
-        // aggregate by supplier_id
-        const agg = {};
-        list.forEach(row => {
-          const sid = row.supplier_id ?? row.supplierId ?? ('supplier_'+(row.supplier_id||'unknown'));
-          if (!agg[sid]) agg[sid] = { supplier_id: sid, items: 0, amount: 0, last: null };
-          const qty = Number(row.quantity || 0);
-          const amt = Number(row.total_price || row.amount || 0); // fallback
-          agg[sid].items += qty;
-          agg[sid].amount += amt;
-          if (!agg[sid].last || new Date(row.created_at) > new Date(agg[sid].last)) agg[sid].last = row.created_at;
-        });
+    // form submit
+    document.getElementById('receiveForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const btn = document.getElementById('receiveSubmitBtn');
+      btn.disabled = true;
+      btn.innerText = 'Sending...';
 
-        const tbody = document.getElementById('supplierTableBody');
-        tbody.innerHTML = '';
-        Object.values(agg).forEach(s => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>Supplier ${s.supplier_id}</td><td>${s.items}</td><td>${s.amount.toFixed(2)}</td><td>${s.last? s.last : '-'}</td>`;
-          tbody.appendChild(tr);
-        });
-      } catch (e) {
-        console.error(e);
-        document.getElementById('supplierTableBody').innerHTML = '<tr><td colspan="4">Failed to load suppliers</td></tr>';
+      const product_id = Number(document.getElementById('receiveProductId').value || 0);
+      const quantity = Number(document.getElementById('receiveQuantity').value || 0);
+      const notes = (document.getElementById('receiveNotes').value || '').trim();
+
+      if (!product_id || quantity <= 0) {
+        showReceiveAlert('Please enter a valid product id and quantity.', 'danger');
+        btn.disabled = false;
+        btn.innerText = 'Receive';
+        return;
       }
-    }
 
-    // load transfers (type = transfer)
-    async function loadTransfers() {
       try {
-        const list = await fetchStock('transfer');
-        const tbody = document.getElementById('transfersTableBody');
-        tbody.innerHTML = '';
-        list.forEach(r => {
-          const date = r.created_at ? new Date(r.created_at).toLocaleString() : '-';
-          const toWh = r.to_warehouse_id ?? r.toWarehouseId ?? 'N/A';
-          const item = 'Product '+(r.product_id ?? r.productId ?? '-');
-          const qty = r.quantity ?? 0;
-          const status = r.type ?? 'transfer';
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${date}</td><td>${toWh}</td><td>${item}</td><td>${qty}</td><td><span class="transfer-badge bg-light">${status}</span></td>`;
-          tbody.appendChild(tr);
+        const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+        const res = await fetch(API_BASE + '/stock/receive', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': token
+          },
+          body: JSON.stringify({
+            product_id: product_id,
+            quantity: quantity,
+            notes: notes || 'receive from UI'
+          })
         });
 
-        // pending transfers
-        document.getElementById('cardPendingTransfers').innerText = list.length;
-      } catch (e) {
-        console.error(e);
-        document.getElementById('transfersTableBody').innerHTML = '<tr><td colspan="5">Failed to load transfers</td></tr>';
-      }
-    }
+        const json = await res.json().catch(()=>({}));
 
-    // load summary stats from stock 'out' (sales) and 'in' (receives)
-    async function loadStats() {
-      try {
-        const outs = await fetchStock('out');
-        const ins = await fetchStock('supplier_in');
-        // total sales (sum out.quantity)
-        const totalSalesQty = outs.reduce((s,r)=> s + Number(r.quantity || 0), 0);
-        document.getElementById('cardTotalSales').innerText = '$' + (totalSalesQty).toFixed(2);
-
-        // filter by selected date for "Sales Today"
-        const dateInput = document.getElementById('filterDate').value;
-        if (dateInput) {
-          const dayouts = outs.filter(r => r.created_at && r.created_at.startsWith(dateInput));
-          const daySum = dayouts.reduce((s,r)=> s + Number(r.quantity||0), 0);
-          document.getElementById('cardSalesToday').innerText = '$' + daySum.toFixed(2);
+        if (!res.ok) {
+          const msg = json?.message || (json?.errors ? JSON.stringify(json.errors) : 'Server error');
+          showReceiveAlert('Error: ' + msg, 'danger');
         } else {
-          document.getElementById('cardSalesToday').innerText = '$0';
+          showReceiveAlert('Stock received successfully.', 'success');
+          // update UI
+          if (typeof reloadAll === 'function') {
+            await reloadAll();
+          }
+          setTimeout(()=>{ if (receiveModal) receiveModal.hide(); }, 700);
         }
-
-        // this month
-        const now = new Date();
-        const monthStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
-        const monthOuts = outs.filter(r => r.created_at && r.created_at.startsWith(monthStr));
-        const monthSum = monthOuts.reduce((s,r)=> s + Number(r.quantity||0), 0);
-        document.getElementById('cardSalesMonth').innerText = '$' + monthSum.toFixed(2);
-
-      } catch (e) {
-        console.error(e);
+      } catch(err) {
+        showReceiveAlert('Network error: ' + (err.message || err), 'danger');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Receive';
       }
-    }
-
-    // export supplier table to CSV
-    function exportCsv() {
-      const rows = Array.from(document.querySelectorAll('#supplierTableBody tr')).map(tr=>{
-        return Array.from(tr.children).map(td=> td.innerText.trim());
-      });
-      if (!rows.length) { alert('No data'); return; }
-      const header = ['Supplier','Items','Amount','Last Delivery'];
-      const csv = [header.join(','), ...rows.map(r=>r.map(c=>`"${c.replace(/"/g,'""')}"`).join(','))].join('\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'suppliers.csv';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    }
-
-    // quick actions: in this simple version prompt user for values and call endpoints
-    async function openReceiveModal(){
-      const pid = prompt('Product ID to receive:');
-      if (!pid) return;
-      const qty = prompt('Quantity:','1');
-      if (!qty) return;
-      const payload = { product_id: Number(pid), quantity: Number(qty), notes: 'manual receive from UI' };
-      const res = await fetch(API_BASE + '/stock/receive', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-      const json = await res.json();
-      if (!res.ok) { alert('Error: ' + (json.message || JSON.stringify(json))); return; }
-      alert('Received OK');
-      await reloadAll();
-    }
-
-    async function openTransferModal(){
-      const pid = prompt('Product ID to transfer:');
-      if (!pid) return;
-      const qty = prompt('Quantity:','1');
-      if (!qty) return;
-      const payload = { product_id: Number(pid), quantity: Number(qty), notes: 'transfer from UI' };
-      const res = await fetch(API_BASE + '/stock/transfer', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-      const json = await res.json();
-      if (!res.ok) { alert('Error: ' + (json.message || JSON.stringify(json))); return; }
-      alert('Transfer created');
-      await reloadAll();
-    }
-
-    async function openSaleModal(){
-      const pid = prompt('Product ID to sell:');
-      if (!pid) return;
-      const qty = prompt('Quantity:','1');
-      if (!qty) return;
-      const payload = { items: [{ product_id: Number(pid), quantity: Number(qty) }] };
-      const res = await fetch(API_BASE + '/sales', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-      const json = await res.json();
-      if (!res.ok) { alert('Error: ' + (json.message || JSON.stringify(json))); return; }
-      alert('Sale recorded (id: ' + (json.sale_id ?? '-') + ')');
-      await reloadAll();
-    }
-
-    // reload all widgets
-    async function reloadAll(){
-      await Promise.all([ loadSuppliers(), loadTransfers(), loadStats() ]);
-    }
-
-    // wire up events
-    document.getElementById('exportCsvBtn').addEventListener('click', exportCsv);
-    document.getElementById('filterDate').addEventListener('change', loadStats);
-    document.getElementById('searchSupplier').addEventListener('input', (e)=> {
-      // simple client-side filter for supplier table
-      const q = e.target.value.toLowerCase();
-      document.querySelectorAll('#supplierTableBody tr').forEach(tr=>{
-        tr.style.display = tr.innerText.toLowerCase().includes(q) ? '' : 'none';
-      });
     });
 
-    // init
-    reloadAll();
+    // if you want other quick action functions to remain, they are defined in sales-stocktransfer.js
+    // but we make sure reloadAll exists. If not, keep the old one below:
+    if (typeof reloadAll !== 'function') {
+      async function reloadAll(){
+        try {
+          if (typeof loadSuppliers === 'function') await loadSuppliers();
+          if (typeof loadTransfers === 'function') await loadTransfers();
+          if (typeof loadStats === 'function') await loadStats();
+        } catch(e){ console.error(e); }
+      }
+    }
   </script>
 
 </body>

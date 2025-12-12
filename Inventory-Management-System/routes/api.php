@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StatsController;
 
 
 Route::apiResource('supplier', SupplierController::class);
@@ -34,5 +35,12 @@ Route::prefix('v1')->group(function() {
     Route::post('stock/receive', [StockController::class,'receive']);
     Route::post('stock/transfer', [StockController::class,'transfer']);
     Route::post('stock/outbound', [StockController::class,'outbound']);
+});
+// routes/api.php
+ // <-- adjust namespace if your StatsController is in a subfolder
+
+Route::prefix('v1')->group(function () {
+    // other v1 routes...
+    Route::get('/dashboard/totals', [StatsController::class, 'totals']);
 });
 

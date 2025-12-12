@@ -315,3 +315,146 @@
   })();
 
 })();
+
+
+/**
+ * public/js/sales-stocktransfer.js
+ * Make sure your blade includes: <script src="{{ asset('js/sales-stocktransfer.js') }}"></script>
+ * Uses API_BASE from the blade: const API_BASE = "{{ url('/api/v1') }}";
+ */
+
+const API_BASE = (typeof API_BASE !== 'undefined') ? API_BASE : '/api/v1';
+
+// Format money nicely
+function fmtAmount(n) {
+  if (n === null || n === undefined) return '$0.00';
+  const num = Number(n) || 0;
+  return '$' + num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// Load dashboard totals and update cards
+async function loadStats(date = null) {
+  try {
+    let url = API_BASE + '/dashboard/totals';
+    if (date) url += '?date=' + encodeURIComponent(date);
+
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' }});
+    if (!res.ok) {
+      console.error('Failed to load stats:', res.status, res.statusText);
+      // if JSON error included, try to log it
+      try { const err = await res.json(); console.debug(err); } catch(e){}
+      return;
+    }
+
+    const data = await res.json();
+
+    document.getElementById('cardTotalSales')?.textContent = fmtAmount(data.total_sales || 0);
+    document.getElementById('cardSalesToday')?.textContent = fmtAmount(data.sales_selected_date || 0);
+    document.getElementById('cardSalesMonth')?.textContent = fmtAmount(data.sales_this_month || 0);
+    document.getElementById('cardPendingTransfers')?.textContent = (data.pending_transfers !== undefined) ? String(data.pending_transfers) : '0';
+
+    // If you later add a stock value card, you can set it here:
+    // document.getElementById('cardStockValue')?.textContent = fmtAmount(data.stock_value || 0);
+
+  } catch (err) {
+    console.error('Error in loadStats():', err);
+  }
+}
+
+// Try to load suppliers (optional endpoint). If your API doesn't have it, table will show a placeholder.
+async function loadSuppliers() {
+  try {
+    const out = document.getElementById('supplierTableBody');
+    if (!out) return;
+    const url = API_BASE + '/suppliers';
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' }});
+    if (!res.ok) {
+      out.innerHTML = '<tr><td colspan="4" class="text-muted small">No suppliers API found</td></tr>';
+      return;
+    }
+    const suppliers = await res.json();
+    out.innerHTML = '';
+    (suppliers || []).forEach(s => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${s.name || '—'}</td>
+                      <td>${s.items_count ?? s.items ?? 0}</td>
+                      <td>${fmtAmount(s.amount ?? s.total ?? 0)}</td>
+                      <td>${s.last_delivery ?? '—'}</td>`;
+      out.appendChild(tr);
+    });
+  } catch (err) {
+    console.error('loadSuppliers error:', err);
+  }
+}
+
+// Load transfers history (optional)
+async function loadTransfers() {
+  try {
+    const out = document.getElementById('transfersTableBody');
+    if (!out) return;
+    const url = API_BASE + '/transfers';
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' }});
+    if (!res.ok) {
+      out.innerHTML = '<tr><td colspan="5" class="text-muted small">No transfers API found</td></tr>';
+      return;
+    }
+    const transfers = await res.json();
+    out.innerHTML = '';
+    (transfers || []).forEach(t => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${t.date ?? t.created_at ?? '—'}</td>
+                      <td>${t.to_location ?? t.to ?? '—'}</td>
+                      <td>${t.item_name ?? t.item ?? '—'}</td>
+                      <td>${t.qty ?? t.quantity ?? 0}</td>
+                      <td>${t.status ?? '—'}</td>`;
+      out.appendChild(tr);
+    });
+  } catch (err) {
+    console.error('loadTransfers error:', err);
+  }
+}
+
+// Central reload function called after actions (receive, sale)
+async function reloadAll() {
+  let dateVal = null;
+  const dateInput = document.getElementById('filterDate');
+  if (dateInput && dateInput.value) dateVal = dateInput.value;
+
+  await Promise.allSettled([
+    loadStats(dateVal),
+    loadSuppliers(),
+    loadTransfers()
+  ]);
+}
+
+// initialize
+document.addEventListener('DOMContentLoaded', function() {
+  reloadAll();
+
+  const filterDate = document.getElementById('filterDate');
+  if (filterDate) filterDate.addEventListener('change', () => loadStats(filterDate.value));
+
+  const searchSupplier = document.getElementById('searchSupplier');
+  if (searchSupplier) {
+    searchSupplier.addEventListener('input', function(){
+      const q = (this.value || '').toLowerCase();
+      const tbody = document.getElementById('supplierTableBody');
+      if (!tbody) return;
+      Array.from(tbody.querySelectorAll('tr')).forEach(tr => {
+        const txt = tr.textContent.toLowerCase();
+        tr.style.display = txt.includes(q) ? '' : 'none';
+      });
+    });
+  }
+
+  const csvBtn = document.getElementById('exportCsvBtn');
+  if (csvBtn) {
+    csvBtn.addEventListener('click', function(){
+      const url = API_BASE + '/suppliers/export';
+      window.open(url, '_blank');
+    });
+  }
+});
+
+// make reloadAll available globally (your blade calls it after receive)
+window.reloadAll = reloadAll;

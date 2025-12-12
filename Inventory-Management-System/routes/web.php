@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\StatsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,3 +43,7 @@ Route::get('/api/dashboard-stats', [DashboardController::class, 'getStats'])->na
 Route::get('/salesstock', function () {
     return view('salesstock');
 });
+
+
+
+Route::get('/dashboard/totals', [StatsController::class, 'totals'])->name('dashboard.totals');
