@@ -15,6 +15,15 @@ Route::apiResource('product', ProductController::class);
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\AuthController;
+
+ Route::get('/user',function(Request $request){
+        return $request->user();
+    })->middleware('auth:sanctum');
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+    
 
 Route::prefix('v1')->group(function() {
     Route::get('purchase-orders', [PurchaseOrderController::class,'index']);

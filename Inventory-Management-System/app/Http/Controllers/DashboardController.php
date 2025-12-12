@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\Order;
-use App\Models\Supplier;
-use App\Models\Category;
 use App\Models\PurchaseOrder;
-use Illuminate\Http\Request;
+use App\Notifications\InventoryAlert;
+use App\Models\User;
+
 
 class DashboardController extends Controller
 {
@@ -15,9 +14,23 @@ class DashboardController extends Controller
     {
         // Get total counts
         $totalProducts = Product::count();
-        $totalOrders = PurchaseOrder::count();
-        $totalStock = Product::sum('quantity');
-        $outOfStock = Product::where('quantity', 0)->count();
+        $totalOrders   = PurchaseOrder::count();
+        $totalStock    = Product::sum('quantity');
+        $outOfStock    = Product::where('quantity', 0)->count();
+
+
+        $admin = User::first();
+
+        if ($admin) {
+            $unreadCount = $admin->unreadNotifications()->count();
+
+            $lowStockAlerts = $admin->unreadNotifications()->get();
+
+        } else {
+            $unreadCount    = 0;
+            $lowStockAlerts = collect();
+        }
+
 
         // Get products with low stock (below reorder threshold)
         $lowStockProducts = Product::whereColumn('quantity', '<=', 'reorder_threshold')
@@ -31,7 +44,6 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-
         return view('dashboard', compact(
             'totalProducts',
             'totalOrders',
@@ -39,12 +51,13 @@ class DashboardController extends Controller
             'outOfStock',
             'lowStockProducts',
             'recentProducts',
+            'unreadCount',
+            'lowStockAlerts',
         ));
     }
 
     public function getStats()
     {
-        // For AJAX requests to update dashboard without reloading
         $totalProducts = Product::count();
         $totalOrders = PurchaseOrder::count();
         $totalStock = Product::sum('quantity');
@@ -52,9 +65,9 @@ class DashboardController extends Controller
 
         return response()->json([
             'totalProducts' => $totalProducts,
-            'totalOrders' => $totalOrders,
-            'totalStock' => $totalStock,
-            'outOfStock' => $outOfStock,
+            'totalOrders'   => $totalOrders,
+            'totalStock'    => $totalStock,
+            'outOfStock'    => $outOfStock,
         ]);
     }
 }

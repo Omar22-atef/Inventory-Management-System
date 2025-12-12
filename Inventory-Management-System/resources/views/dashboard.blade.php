@@ -81,19 +81,25 @@
 
     <main class="main-content">
 
-        <nav class="dashboard-header d-flex align-items-center justify-content-between">
-            <div>
-                <h5 class="fw-bold mb-1">Welcome {{ auth()->user()->name ?? 'User' }}</h5>
-                <small class="text-muted">{{ auth()->user()->email ?? '' }}</small>
-            </div>
+       <nav class="dashboard-header d-flex align-items-center justify-content-between">
+    <div>
+      <h5 class="fw-bold mb-1">Welcome {{ $user->name ?? 'Admin' }}</h5>
+      <small class="text-muted">{{ $user->email ?? 'admin@example.com' }}</small>
+    </div>
 
-            <div class="search-box">
-                <input type="text" class="form-control" placeholder="Search...">
-                <i class="bi bi-search search-icon"></i>
-            </div>
+    <div class="d-flex align-items-center gap-3">
+        <div class="search-box">
+            <input type="text" class="form-control" placeholder="Search...">
+            <i class="bi bi-search search-icon"></i>
+        </div>
 
-            
-        </nav>
+        <!-- Notification icon -->
+        <div class="notification" id="notificationTrigger">
+            <i class="bi bi-bell"></i>
+        </div>
+    </div>
+</nav>
+
 
         <section class="overview mt-4">
             <h5 class="fw-bold mb-3">Overview</h5>
@@ -178,6 +184,61 @@
             </div>
         </section>
 
+               <!-- Low-Stock Notifications Overlay -->
+    <div id="lowStockOverlay" class="ls-overlay">
+        <div class="ls-overlay-backdrop"></div>
+
+        <div class="ls-panel">
+            <button class="ls-close-btn" aria-label="Close">
+                ✕
+            </button>
+
+            <h2>Low-Stock Notifications</h2>
+            <p class="ls-intro">
+                These products have reached their low-stock threshold. You can ignore or email the supplier to reorder.
+            </p>
+
+            @if($lowStockAlerts->isEmpty())
+                <p class="text-muted mb-0">No low-stock notifications right now 🎉</p>
+            @else
+                <div class="ls-list">
+                    @foreach($lowStockAlerts as $notification)
+                        @php
+                            $data = $notification->data;
+                        @endphp
+
+                        <div class="ls-item" data-notification-id="{{ $notification->id }}" data-product-id="{{ $data['product_id'] ?? '' }}">
+                            <div class="ls-item-main">
+                                <h5 class="mb-1">{{ $data['product_name'] ?? 'Product' }}</h5>
+                                <p class="mb-1 small text-muted">
+                                    {{ $data['message'] ?? '' }}
+                                </p>
+                                <p class="mb-0 small">
+                                    Quantity: <strong>{{ $data['level'] ?? $data['quantity'] ?? 'N/A' }}</strong> &nbsp;·&nbsp;
+                                    Reorder threshold: <strong>{{ $data['reorder_threshold'] ?? 'N/A' }}</strong>
+                                </p>
+                            </div>
+
+                            <div class="ls-item-actions">
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-secondary btn-ignore"
+                                        data-notification-id="{{ $notification->id }}">
+                                    Ignore
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-sm btn-primary btn-send-email"
+                                        data-product-id="{{ $data['product_id'] ?? '' }}">
+                                    Send email to supplier
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    </div>
+
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -201,6 +262,100 @@
 
         // Refresh every 30 seconds
         setInterval(refreshDashboardData, 30000);
+
+
+
+    // Low-Stock overlay open/close + actions
+    document.addEventListener('DOMContentLoaded', function () {
+        const notifTrigger = document.getElementById('notificationTrigger');
+        const overlay      = document.getElementById('lowStockOverlay');
+        const closeBtn     = overlay ? overlay.querySelector('.ls-close-btn') : null;
+        const backdrop     = overlay ? overlay.querySelector('.ls-overlay-backdrop') : null;
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        if (notifTrigger && overlay) {
+            notifTrigger.addEventListener('click', function () {
+                overlay.classList.add('show');
+            });
+        }
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                overlay.classList.remove('show');
+            });
+        }
+
+        if (backdrop) {
+            backdrop.addEventListener('click', function () {
+                overlay.classList.remove('show');
+            });
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && overlay) {
+                overlay.classList.remove('show');
+            }
+        });
+
+        // Delegated click handling for buttons
+        if (overlay) {
+            overlay.addEventListener('click', async function (e) {
+                const ignoreBtn = e.target.closest('.btn-ignore');
+                const sendBtn   = e.target.closest('.btn-send-email');
+
+                // Ignore button → mark notification as read
+                if (ignoreBtn) {
+                    const notifId = ignoreBtn.dataset.notificationId;
+
+                    try {
+                        const res = await fetch(`{{ route('notifications.read', ':id') }}`.replace(':id', notifId), {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        if (res.ok) {
+                            const item = ignoreBtn.closest('.ls-item');
+                            if (item) item.remove();
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        alert('Failed to ignore notification.');
+                    }
+                }
+
+                // Send email button → call supplier.sendOrder route
+                if (sendBtn) {
+                    const productId = sendBtn.dataset.productId;
+
+                    sendBtn.disabled = true;
+
+                    try {
+                        const res = await fetch(`{{ route('supplier.sendOrder', ':id') }}`.replace(':id', productId), {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        const data = await res.json();
+                        alert(data.message || (res.ok ? 'Email sent.' : 'Failed to send email.'));
+                    } catch (err) {
+                        console.error(err);
+                        alert('Error sending email.');
+                    } finally {
+                        sendBtn.disabled = false;
+                    }
+                }
+            });
+        }
+    });
+
+
     </script>
 </body>
 </html>

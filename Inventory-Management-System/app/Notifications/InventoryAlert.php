@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Product;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
@@ -24,47 +25,30 @@ class InventoryAlert extends Notification implements ShouldQueue
      * @param  string $message
      * @param  string $recipientType
      */
-    public function __construct($product = null, $level = null, $message = null)
+    public function __construct(Product $product, int $level, string $message, string $recipientType = 'admin')
     {
-        $this->product = $product;
-        $this->level = $level;
-        $this->message = $message ?? ($product ? "Stock alert for {$product->name}" : 'Inventory alert');
+        $this->product       = $product;
+        $this->level         = $level;
+        $this->message       = $message;
+        $this->recipientType = $recipientType;
     }
-
     /**
      * Delivery channels (both database and mail).
      */
     public function via($notifiable): array
     {
-        return ['database', 'mail'];
+        return ['database'];
     }
 
     /**
      * Email notification content.
      */
-    public function toMail($notifiable): MailMessage
+   public function toMail($notifiable): MailMessage
     {
-        $productName = $this->product->name ?? 'Unknown Product';
-        $level = $this->level ?? 'N/A';
-
-        // Safe URL (handles missing "products.show" route)
-        $url = null;
-        try {
-            if ($this->product) {
-                $url = route('products.show', ['product' => $this->product->id]);
-            }
-        } catch (\Throwable $e) {
-            $url = url('/'); // fallback
-        }
-
         return (new MailMessage)
-            ->subject("Inventory Alert: {$productName}")
-            ->greeting("Inventory Alert")
-            ->line("Product: **{$productName}**")
-            ->line("Level: **{$level}**")
+            ->subject('Low Stock Alert: ' . $this->product->name)
             ->line($this->message)
-            ->action('View Product', $url)
-            ->line('This is an automated stock alert from your inventory system.');
+            ->action('View Product', url('/products/' . $this->product->id));
     }
 
     /**
@@ -84,6 +68,8 @@ class InventoryAlert extends Notification implements ShouldQueue
         return [
             'product_id' => $this->product->id ?? null,
             'product_name' => $this->product->name ?? null,
+            'quantity'          => $this->product->quantity,
+            'reorder_threshold' => $this->product->reorder_threshold,
             'level' => $this->level,
             'message' => $this->message,
             'url' => $url,

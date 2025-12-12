@@ -13,8 +13,7 @@ class SupplierController extends Controller
     public function index()
     {
         $suppliers = Supplier::all();
-        // return response()->json($supplier, 200);
-        return view('manage-suppliers', compact('suppliers'));
+        return response()->json(['data' => $suppliers], 200);
     }
 
 
